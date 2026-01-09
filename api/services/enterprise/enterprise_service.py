@@ -64,8 +64,9 @@ class EnterpriseService:
     class WorkspacePermissionService:
         @classmethod
         def get_permission(cls, workspace_id: str):
-            params = {"id": workspace_id}
-            data = EnterpriseRequest.send_request("GET", "/workspaces/permission", params=params)
+            if not workspace_id:
+                raise ValueError("workspace_id must be provided.")
+            data = EnterpriseRequest.send_request("GET", f"/workspaces/{workspace_id}/permission")
             if not data or "permission" not in data:
                 raise ValueError("No data found.")
             return WorkspacePermission.model_validate(data["permission"])
