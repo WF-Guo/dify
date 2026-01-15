@@ -1,6 +1,7 @@
 import type { DefaultModel } from '@/app/components/header/account-setting/model-provider-page/declarations'
+import type { SummaryIndexSetting as SummaryIndexSettingType } from '@/models/datasets'
 import type { RetrievalConfig } from '@/types/app'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { checkShowMultiModalTip } from '@/app/components/datasets/settings/utils'
 import { ModelTypeEnum } from '@/app/components/header/account-setting/model-provider-page/declarations'
 import { useDefaultModel, useModelList, useModelListAndDefaultModelAndCurrentProviderAndModel } from '@/app/components/header/account-setting/model-provider-page/hooks'
@@ -29,6 +30,7 @@ export type UseIndexingConfigOptions = {
   initialRetrievalConfig?: RetrievalConfig
   isAPIKeySet: boolean
   hasSetIndexType: boolean
+  initialSummaryIndexSetting?: SummaryIndexSettingType
 }
 
 export const useIndexingConfig = (options: UseIndexingConfigOptions) => {
@@ -38,6 +40,7 @@ export const useIndexingConfig = (options: UseIndexingConfigOptions) => {
     initialRetrievalConfig,
     isAPIKeySet,
     hasSetIndexType,
+    initialSummaryIndexSetting,
   } = options
 
   // Rerank model
@@ -115,6 +118,17 @@ export const useIndexingConfig = (options: UseIndexingConfigOptions) => {
   // Get effective indexing technique
   const getIndexingTechnique = () => initialIndexType || indexType
 
+  // Summary index setting
+  const [summaryIndexSetting, setSummaryIndexSetting] = useState<SummaryIndexSettingType | undefined>(
+    initialSummaryIndexSetting ?? undefined,
+  )
+  const summaryIndexSettingRef = useRef<SummaryIndexSettingType | undefined>(initialSummaryIndexSetting ?? undefined)
+
+  const handleSummaryIndexSettingChange = useCallback((payload: SummaryIndexSettingType) => {
+    setSummaryIndexSetting({ ...summaryIndexSettingRef.current, ...payload })
+    summaryIndexSettingRef.current = { ...summaryIndexSettingRef.current, ...payload }
+  }, [])
+
   return {
     // Index type
     indexType,
@@ -137,6 +151,10 @@ export const useIndexingConfig = (options: UseIndexingConfigOptions) => {
 
     // Computed
     showMultiModalTip,
+
+    // Summary index setting
+    summaryIndexSetting,
+    handleSummaryIndexSettingChange,
   }
 }
 
