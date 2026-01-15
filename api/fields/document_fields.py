@@ -33,6 +33,9 @@ document_fields = {
     "hit_count": fields.Integer,
     "doc_form": fields.String,
     "doc_metadata": fields.List(fields.Nested(document_metadata_fields), attribute="doc_metadata_details"),
+    # Summary index generation status: "GENERATING", "COMPLETED", "ERROR", or null if not enabled
+    "summary_index_status": fields.String,
+    "need_summary": fields.Boolean,  # Whether this document needs summary index generation
 }
 
 document_with_segments_fields = {
@@ -60,6 +63,9 @@ document_with_segments_fields = {
     "completed_segments": fields.Integer,
     "total_segments": fields.Integer,
     "doc_metadata": fields.List(fields.Nested(document_metadata_fields), attribute="doc_metadata_details"),
+    # Summary index generation status: "GENERATING", "COMPLETED", "ERROR", or null if not enabled
+    "summary_index_status": fields.String,
+    "need_summary": fields.Boolean,  # Whether this document needs summary index generation
 }
 
 dataset_and_document_fields = {
